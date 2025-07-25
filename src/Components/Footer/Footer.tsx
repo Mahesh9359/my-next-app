@@ -97,10 +97,6 @@ const Footer: React.FC = () => {
                     </div>
                 </div>
             </div>
-
-            <div className="border-t border-white/20 text-center pt-6 mt-10 text-sm text-gray-300">
-                &copy; {new Date().getFullYear()} FoodPanda. All rights reserved.
-            </div>
         </footer>
     );
 };

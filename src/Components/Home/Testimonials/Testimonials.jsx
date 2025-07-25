@@ -42,7 +42,7 @@ const Testimonials = () => {
               alt={testimonial.name}
               className="w-16 h-16 rounded-full mx-auto mb-4 object-cover"
             />
-            <p className="italic text-gray-700 mb-4">"{testimonial.message}"</p>
+            <p className=" text-gray-700 mb-4">"{testimonial.message}"</p>
             <h3 className="font-bold text-gray-800">{testimonial.name}</h3>
             <p className="text-sm text-gray-500">{testimonial.location}</p>
           </div>

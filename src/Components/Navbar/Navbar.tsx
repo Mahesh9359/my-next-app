@@ -4,15 +4,13 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import logoImg from 'public/icons/logo.png';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectTotalQuantity, clearCart } from '@/redux/cartSlice';
+import {  useSelector } from 'react-redux';
+import { selectTotalQuantity } from '@/redux/cartSlice';
 
 
 const Navbar: React.FC = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); 
     const cartQuantity = useSelector(selectTotalQuantity);
-      const dispatch = useDispatch();
-
 
     useEffect(() => {
         const checkLoginStatus = () => {
