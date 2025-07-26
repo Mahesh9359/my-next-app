@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '@/redux/cartSlice';
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 
 type MenuItem = {
   id: number;
@@ -76,7 +77,7 @@ const CategoryDetails = ({ params }: Props) => {
                   key={item.id}
                   className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden text-center p-6 flex flex-col items-center"
                 >
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.name}
                     className="w-full h-40 object-cover rounded-lg mb-4"

@@ -9,6 +9,7 @@ import { addToCart } from '@/redux/cartSlice';
 import { useSelector } from 'react-redux';
 import { selectTotalQuantity } from '@/redux/cartSlice';
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 
 
 type QuantityMap = {
@@ -58,7 +59,7 @@ const RestaurantDetailsPage = () => {
                 key={item.id}
                 className="bg-white rounded-xl shadow-md hover:scale-105 transition-transform duration-300 flex flex-col justify-between overflow-hidden"
               >
-                <img
+                <Image
                   src={item.image}
                   alt={item.name}
                   className="w-full h-44 object-cover rounded-t-xl"

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import React from 'react';
 
 const testimonials = [
@@ -37,7 +38,7 @@ const Testimonials = () => {
             key={index}
             className="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden h-full transform hover:-translate-y-2"
           >
-            <img
+            <Image
               src={testimonial.image}
               alt={testimonial.name}
               className="w-16 h-16 rounded-full mx-auto mb-4 object-cover"

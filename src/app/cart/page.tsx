@@ -6,6 +6,7 @@ import { RootState } from '@/redux/store';
 import { removeFromCart, clearCart, addToCart, CartItem,} from '@/redux/cartSlice';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const TAX_RATE = 0.05;
 const DELIVERY_CHARGE = 40; 
@@ -60,7 +61,7 @@ function Cart() {
                 key={item.id}
                 className="flex flex-col sm:flex-row items-center justify-between bg-white rounded-xl p-6 shadow-md gap-4"
               >
-                <img
+                <Image
                   src={item.image || '/placeholder.png'}
                   alt={item.name}
                   className="w-24 h-24 object-cover rounded-lg"
