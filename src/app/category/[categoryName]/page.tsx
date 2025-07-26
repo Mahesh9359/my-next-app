@@ -6,6 +6,7 @@ import { menuCategories } from '@/Components/Data/MenuCategories';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '@/redux/cartSlice';
+import { useSession } from 'next-auth/react';
 
 type MenuItem = {
   id: number;
@@ -22,7 +23,7 @@ type Category = {
 };
 
 type Props = {
-  params: Promise<{ categoryName: string }>; 
+  params: Promise<{ categoryName: string }>;
 };
 
 
@@ -34,9 +35,11 @@ type QuantityState = {
 const CategoryDetails = ({ params }: Props) => {
   const [quantity, setQuantity] = useState<QuantityState>({});
   const dispatch = useDispatch();
+  const { data: session } = useSession();
 
-const { categoryName } = use(params);
-const decodedName = decodeURIComponent(categoryName.toLowerCase());
+
+  const { categoryName } = use(params);
+  const decodedName = decodeURIComponent(categoryName.toLowerCase());
 
   const categoryData: Category | undefined = menuCategories.find(
     (cat) => cat.category.toLowerCase() === decodedName
@@ -111,7 +114,7 @@ const decodedName = decodeURIComponent(categoryName.toLowerCase());
                     onClick={() => {
                       const isLoggedIn = localStorage.getItem("isLoggedIn");
 
-                      if (!isLoggedIn || isLoggedIn !== "true") {
+                      if ((!isLoggedIn || isLoggedIn !== "true") && !session) {
                         toast.error("Please login first to add items to cart");
                         return;
                       }
@@ -126,7 +129,6 @@ const decodedName = decodeURIComponent(categoryName.toLowerCase());
                         setQuantity((prev) => ({ ...prev, [item.id]: 0 }));
                       }
                     }}
-
                   >
                     Add To Cart
                   </button>

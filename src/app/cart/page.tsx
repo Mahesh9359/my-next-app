@@ -47,7 +47,7 @@ function Cart() {
   };
 
   return (
-    <div className="px-6 py-10">
+    <div className="px-6 py-10 min-h-100">
       <h2 className="text-4xl font-bold text-center mb-10">🛒 Your Cart</h2>
 
       {cartItems.length === 0 ? (

@@ -1,91 +1,94 @@
-"use client";
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import logoImg from 'public/icons/logo.png';
-import {  useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectTotalQuantity } from '@/redux/cartSlice';
-
+import { useSession, signOut } from 'next-auth/react';
 
 const Navbar: React.FC = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); 
+    const [isLocalLoggedIn, setIsLocalLoggedIn] = useState(false);
+    const { data: session } = useSession();
     const cartQuantity = useSelector(selectTotalQuantity);
 
     useEffect(() => {
         const checkLoginStatus = () => {
-            const status = localStorage.getItem("isLoggedIn");
-            setIsLoggedIn(status === "true");
+            const status = localStorage.getItem('isLoggedIn') === 'true';
+            setIsLocalLoggedIn(status);
         };
 
         checkLoginStatus();
-        window.addEventListener("authChange", checkLoginStatus);
 
+        window.addEventListener('authChange', checkLoginStatus);
         return () => {
-            window.removeEventListener("authChange", checkLoginStatus);
+            window.removeEventListener('authChange', checkLoginStatus);
         };
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("userData");
-        localStorage.removeItem("cartItems");
-        setIsLoggedIn(false);
-        window.dispatchEvent(new Event("authChange"));
-        window.location.href = "/";
+        if (session) {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userData');
+            localStorage.removeItem('cartItems');
+            window.dispatchEvent(new Event('authChange'));
+            signOut({ callbackUrl: '/' });
+        } else {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userData');
+            localStorage.removeItem('cartItems');
+            window.dispatchEvent(new Event('authChange'));
+            window.location.href = '/';
+        }
     };
 
+
+    const isLoggedIn = isLocalLoggedIn || !!session;
+
     return (
-        <nav className="flex justify-between items-center bg-[linear-gradient(135deg,#6a11cb,#2575fc)] py-4 px-16 text-white shadow-[0_8px_30px_rgba(0,0,0,0.2)] sticky top-0 z-[1000] border-b border-white/20 backdrop-blur-md transition-all duration-300 ease-in-out hover:shadow-[0_12px_50px_rgba(0,0,0,0.3)]">
-            <div className="flex items-center text-white text-3xl font-bold transition-transform duration-300 ease-in-out hover:scale-110">
-                <Image
-                    src={logoImg}
-                    alt="logo"
-                    className="w-10 h-10 mr-3 drop-shadow-[2px_2px_4px_rgba(0,0,0,0.25)] transition-transform duration-500 ease-in-out hover:rotate-18 hover:scale-110"
-                />
-                <span>FoodPanda</span>
+        <nav className="flex justify-between items-center bg-gradient-to-r from-purple-700 to-blue-500 py-4 px-8 text-white shadow-md sticky top-0 z-50">
+            <div className="flex items-center gap-3">
+                <Image src={logoImg} alt="logo" width={40} height={40} />
+                <span className="text-xl font-bold">FoodPanda</span>
             </div>
 
-            <ul className="flex list-none gap-13 items-center">
-                <li><Link href="/" className="text-white text-xl font-medium relative py-2 no-underline transition-all duration-300 hover:text-[#ffffee] hover:[text-shadow:0_0_8px_rgba(255,255,255,0.7)] before:content-[''] before:absolute before:bottom-0 before:left-0 before:h-0.5 before:w-0 before:bg-white before:transition-all before:duration-300 hover:before:w-full">Home</Link></li>
-                <li><Link href="/about" className="text-white text-xl font-medium relative py-2 no-underline transition-all duration-300 hover:text-[#ffffee] hover:[text-shadow:0_0_8px_rgba(255,255,255,0.7)] before:content-[''] before:absolute before:bottom-0 before:left-0 before:h-0.5 before:w-0 before:bg-white before:transition-all before:duration-300 hover:before:w-full">About</Link></li>
-                <li><Link href="/services" className="text-white text-xl font-medium relative py-2 no-underline transition-all duration-300 hover:text-[#ffffee] hover:[text-shadow:0_0_8px_rgba(255,255,255,0.7)] before:content-[''] before:absolute before:bottom-0 before:left-0 before:h-0.5 before:w-0 before:bg-white before:transition-all before:duration-300 hover:before:w-full">Services</Link></li>
-                <li><Link href="/contact" className="text-white text-xl font-medium relative py-2 no-underline transition-all duration-300 hover:text-[#ffffee] hover:[text-shadow:0_0_8px_rgba(255,255,255,0.7)] before:content-[''] before:absolute before:bottom-0 before:left-0 before:h-0.5 before:w-0 before:bg-white before:transition-all before:duration-300 hover:before:w-full">Contact</Link></li>
+            <ul className="flex items-center gap-6 font-medium">
+                <li><Link href="/">Home</Link></li>
+                <li><Link href="/about">About</Link></li>
+                <li><Link href="/services">Services</Link></li>
+                <li><Link href="/contact">Contact</Link></li>
 
-                {!isLoggedIn ? (
-                    <li>
-                        <Link
-                            href="/login"
-                            className="px-5 py-2 bg-white/15 border border-white/50 rounded-full font-semibold cursor-pointer transition-all duration-300 flex items-center gap-2 backdrop-blur-md text-white hover:bg-white/25 hover:-translate-y-1"
-                        >
-                            Login <span className="ml-1">→</span>
-                        </Link>
-                    </li>
-                ) : (
+                {isLoggedIn ? (
                     <>
                         <li className="relative">
-                            <Link
-                                href="/cart"
-                                className="px-5 py-2 bg-white/15 border border-white/50 rounded-full font-semibold cursor-pointer transition-all duration-300 backdrop-blur-md text-white hover:bg-white/25 hover:-translate-y-1"
-                            >
+                            <Link href="/cart" className="relative">
                                 🛒 Cart
                                 {cartQuantity > 0 && (
-                                    <span className="absolute -top-1 -right-3 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
+                                    <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs rounded-full px-2">
                                         {cartQuantity}
                                     </span>
                                 )}
                             </Link>
                         </li>
-
                         <li>
                             <button
                                 onClick={handleLogout}
-                                className="px-5 py-2 bg-white/15 border border-white/50 rounded-full font-semibold cursor-pointer transition-all duration-300 backdrop-blur-md text-white hover:bg-white/25 hover:-translate-y-1"
+                                className="bg-white text-blue-600 hover:bg-gray-200 px-4 py-1 rounded-md"
                             >
                                 Logout
                             </button>
                         </li>
                     </>
+                ) : (
+                    <li>
+                        <Link
+                            href="/login"
+                            className="bg-white text-blue-600 hover:bg-gray-200 px-4 py-1 rounded-md"
+                        >
+                            Login →
+                        </Link>
+                    </li>
                 )}
             </ul>
         </nav>
